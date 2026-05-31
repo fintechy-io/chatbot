@@ -3,8 +3,13 @@ import { UploadCloud, File, CheckCircle, XCircle, ArrowLeft } from 'lucide-react
 import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8923';
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
-function AdminPage() {
+function UploadPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState('');
+
   const [selectedFiles, setSelectedFiles] = useState([]);
   
   // polling state
@@ -13,6 +18,17 @@ function AdminPage() {
   const [progress, setProgress] = useState(0);
   const [currentFileText, setCurrentFileText] = useState('');
   const [uploadResults, setUploadResults] = useState(null);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (passwordInput === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setAuthError('');
+    } else {
+      setAuthError('Incorrect password');
+      setPasswordInput('');
+    }
+  };
 
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -88,6 +104,52 @@ function AdminPage() {
   }, [jobId, jobStatus]);
 
   const isUploading = jobStatus === 'queued' || jobStatus === 'processing';
+
+  if (!isAuthenticated) {
+    return (
+      <div className="admin-container" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh', display: 'flex' }}>
+        <form onSubmit={handleLogin} className="results-section" style={{ maxWidth: '400px', width: '100%', padding: '2rem' }}>
+          <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Admin Access</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              placeholder="Enter admin password"
+              style={{
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid #e2e8f0',
+                outline: 'none',
+                fontSize: '1rem'
+              }}
+              autoFocus
+            />
+            {authError && <div style={{ color: '#ef4444', fontSize: '0.875rem' }}>{authError}</div>}
+            <button 
+              type="submit" 
+              className="mass-upload-button"
+              style={{ margin: 0 }}
+            >
+              Login
+            </button>
+            <Link 
+              to="/" 
+              style={{ 
+                textAlign: 'center', 
+                color: '#64748b', 
+                textDecoration: 'none', 
+                fontSize: '0.875rem',
+                marginTop: '1rem'
+              }}
+            >
+              Return to Chat
+            </Link>
+          </div>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-container">
@@ -189,4 +251,4 @@ function AdminPage() {
   );
 }
 
-export default AdminPage;
+export default UploadPage;

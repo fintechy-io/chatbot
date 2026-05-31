@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ChatPage from './pages/ChatPage';
-import AdminPage from './pages/AdminPage';
+import UploadPage from './pages/UploadPage';
 import './App.css';
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
       <div className="app-container">
         <Routes>
           <Route path="/" element={<ChatPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </div>
     </Router>
